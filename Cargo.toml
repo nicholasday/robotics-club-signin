@@ -1,0 +1,9 @@
+[package]
+name = "robotics-club-signin"
+version = "0.1.0"
+authors = ["Nicholas Day <nick@nickendo.com>"]
+
+[dependencies]
+rocket = "0.3.0"
+rocket_codegen = "0.3.0"
+rusqlite = "0.12.0"

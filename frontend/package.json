@@ -1,0 +1,20 @@
+{
+  "name": "robotics-club-signin",
+  "version": "1.0.0",
+  "main": "index.js",
+  "author": "Nicholas Day",
+  "license": "MIT",
+  "scripts": {
+    "start": "webpack-dev-server --env=dev",
+    "build-webpack": "NODE_ENV=production webpack --env=prod --display-modules"
+  },
+  "dependencies": {
+    "mithril": "^1.1.3"
+  },
+  "devDependencies": {
+    "css-loader": "^0.28.4",
+    "style-loader": "^0.18.2",
+    "webpack": "^3.4.1",
+    "webpack-dev-server": "^2.6.1"
+  }
+}
