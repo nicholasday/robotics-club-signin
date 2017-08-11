@@ -1,0 +1,12 @@
+.orange { color: #FF851B }
+.bg-orange { background-color: #FF851B }
+.border--orange { border-color: #FF851B }
+.hover-b-orange:hover { border-color: #FF851B }
+
+.navy { color: #001f3f }
+.bg-navy { background-color: #001f3f }
+.border--navy { border-color: #001f3f }
+
+.hover-bg-blue:hover { background-color: #0074D9 }
+
+body { font-family: "Helvetica", "Arial", sans-serif; }

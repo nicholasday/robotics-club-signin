@@ -1,1 +1,3 @@
-DROP TABLE person;
+DROP TABLE members;
+
+DROP TABLE signins;

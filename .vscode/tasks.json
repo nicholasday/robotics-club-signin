@@ -1,0 +1,48 @@
+{
+    "version": "0.1.0",
+    "tasks": [
+        {
+            "taskName": "watchexec cargo run",
+            "isBuildCommand": true,
+            "isBackground": true,
+            "command": "watchexec",
+            "args": [
+                "-r",
+                "cargo",
+                "run"
+            ],
+            "showOutput": "never"
+        },
+        {
+            "taskName": "cargo build",
+            "isShellCommand": true,
+            "showOutput": "always",
+            "suppressTaskName": true,
+            "command": "cargo",
+            "args": [
+                "build"
+            ]
+        },
+        {
+            "taskName": "cargo run",
+            "command": "cargo",
+            "isShellCommand": true,
+            "showOutput": "always",
+            "suppressTaskName": true,
+            "args": [
+                "run"
+            ]
+        },
+        {
+            "taskName": "cargo test",
+            "command": "cargo",
+            "isShellCommand": true,
+            "showOutput": "always",
+            "suppressTaskName": true,
+            "args": [
+                "test"
+            ],
+            "isTestCommand": true
+        }
+    ]
+}
