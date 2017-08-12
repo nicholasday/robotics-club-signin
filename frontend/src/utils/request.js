@@ -3,7 +3,7 @@ import m from 'mithril'
 if (process.env.NODE_ENV == 'production') {
     var url = "http://signin-api.nickendo.com"
 } else {
-    var url = "http://localhost:8001"
+    var url = "http://localhost:8000"
 }
 
 function deserialize(data) {
@@ -14,14 +14,14 @@ function deserialize(data) {
 function request(options) {
     options.url = url + options.url
 
-    options.extract = xhr => ({
-            status: xhr.status,
-            body: deserialize(xhr.responseText)
-    })
+    //options.extract = xhr => ({
+            //status: xhr.status,
+            //body: deserialize(xhr.responseText)
+    //})
 
     return m.request(options)
-        .catch(catcherPromise)
-        .then(regularize)
+        //.catch(catcherPromise)
+        //.then(regularize)
 }
 
 function catcherPromise(e) {
