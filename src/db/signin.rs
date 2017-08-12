@@ -75,7 +75,7 @@ impl Signin {
 
     pub fn signout(id: &i64, conn: &Conn) -> QueryResult<Signin> {
         if Signin::today_exists(&id, &conn)? == true {
-            conn.execute("UPDATE signins set date_out = ?1 WHERE member_id = ?2 AND date_out = NULL", &[&Utc::now(), id])?;
+            conn.execute("UPDATE signins set date_out = ?1 WHERE member_id = ?2 AND date_out IS NULL", &[&Utc::now(), id])?;
             let signin = Signin::get(&id, &conn)?;
             Ok(signin)
         } else {
