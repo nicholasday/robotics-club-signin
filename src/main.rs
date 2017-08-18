@@ -12,6 +12,7 @@ extern crate r2d2_sqlite;
 extern crate rusqlite;
 
 extern crate chrono;
+extern crate chrono_tz;
 extern crate tera;
 
 mod db;
@@ -29,6 +30,6 @@ fn main() {
     rocket::ignite()
         .attach(CORS())
         .manage(init_pool())
-        .mount("/", routes![signout_member, get_signins, signin_member, post_members, get_members])
+        .mount("/", routes![signout_member, get_signins_date, get_signins, signin_member, post_members, get_members])
         .launch();
 }

@@ -6,22 +6,10 @@ if (process.env.NODE_ENV == 'production') {
     var url = "http://localhost:8000"
 }
 
-function deserialize(data) {
-    try {return data !== "" ? JSON.parse(data) : null}
-    catch (e) {throw new Error(data)}
-}
-
 function request(options) {
     options.url = url + options.url
 
-    //options.extract = xhr => ({
-            //status: xhr.status,
-            //body: deserialize(xhr.responseText)
-    //})
-
     return m.request(options)
-        //.catch(catcherPromise)
-        //.then(regularize)
 }
 
 function catcherPromise(e) {
@@ -35,10 +23,6 @@ function catcherPromise(e) {
         }
         reject(e)
     })
-}
-
-function regularize(result) {
-    return result.body
 }
 
 export default request
