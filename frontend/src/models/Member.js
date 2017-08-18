@@ -1,4 +1,5 @@
 import r from '../utils/request'
+import m from 'mithril'
 import Signin from './Signin'
 import stream from 'mithril/stream'
 
@@ -33,11 +34,21 @@ const Member = {
         Member.current.signin(signin)
         Member.current.signedin(signin !== undefined)
     },
+    signining_in: false,
+    check_shown: false,
     signin() {
+        Member.signining_in = true
         return r({
             url: `/members/${Member.current.id()}/signin`,
             method: 'POST',
             data: { pizza: Member.current.pizza() }
+        }).then(() => {
+            Member.signining_in = false
+            Member.check_shown = true
+            setTimeout(() => {
+                Member.check_shown = false
+                m.redraw()
+            }, 1000)
         })
     },
     signout() {
