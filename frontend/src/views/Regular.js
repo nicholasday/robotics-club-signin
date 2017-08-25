@@ -52,6 +52,14 @@ const Regular = {
     },
     view() {
         let action = Member.current.signedin() ? "Signout" : "Signin"
+        console.log(Member.current.signin())
+        let signedinclasses = ""
+        let current_signin = Member.current.signin()
+        if (current_signin != undefined) {
+            if (current_signin.date_out !== null) {
+                signedinclasses = ".noclick.dimmed"
+            }
+        }
         let status = ""
         if (Member.signining_in) {
             status = "✈"
@@ -61,7 +69,7 @@ const Regular = {
         let button_text = action + " " + status
         console.log(action, status)
         return m('div.bg-orange.h-100.pa1.pb5', 
-            m('h2.white.center.tc', "ECG Robotics Signin"),
+            m('h2.white.center.tc.br2', "ECG Robotics Signin"),
             m('form.center.measure.pa4.bg-white', 
                 { onsubmit: signin },
                 Array.from(Member.list.values()).map(member => member_radio(member)),
@@ -71,7 +79,7 @@ const Regular = {
                     radio("Peppers"),
                     radio("None")
                 ]),
-                m(`input.input-reset.bg-orange.white.bn.mt2.pv2.ph3.f6.pointer.b[type='submit'][value='${button_text}']`)
+                m(`input.button-reset.bg-orange.white.bn.mt2.pv2.ph3.f6.dim.br2.pointer.b${signedinclasses}[type='submit'][value='${button_text}']`)
             )
         )
     }

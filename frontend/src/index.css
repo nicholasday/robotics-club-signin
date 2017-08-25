@@ -10,3 +10,6 @@
 .hover-bg-blue:hover { background-color: #0074D9 }
 
 body { font-family: "Helvetica", "Arial", sans-serif; }
+
+.dimmed { opacity: .5; }
+.noclick { pointer-events: none; }
