@@ -25,3 +25,5 @@ body {
 body {
     min-height: 100vh;
 }
+
+input{box-sizing:border-box} 

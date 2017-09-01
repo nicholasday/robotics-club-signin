@@ -76,18 +76,18 @@ const Regular = {
             status = "✔"
         }
         let button_text = action
-        return m('div.bg-orange.h-100.pa1.pb5', 
+        return m('div.bg-orange.h-100.pv1.ph1-ns.pb5', 
             m('h2.white.center.tc.br2', "ECG Robotics Signin"),
-            m("form.center.measure.pa4.bg-white.br1[autocomplete='off']", 
+            m("form.center.w-100.measure-ns.pa3.pa4-ns.bg-white.br1-ns[autocomplete='off']", 
                 { onsubmit: signin },
-                m('div.cf', [
+                m('div.cf.ma0.pa0.w-100', [
                     m.fragment({ oncreate: search_created}, [
-                        m('input.fl.pa2.lh-solid.ba.w-60.input-reset#search', { oninput: m.withAttr('value', Member.setSearch), value: Member.search})
+                        m('input.input-reset.fl.lh-solid.ba.br0.pa2.w-100.w-60-ns#search', { oninput: m.withAttr('value', Member.setSearch), value: Member.search})
                     ]),
-                    m(`input.fl.w-25.button-reset.bg-orange.white.bn.pv2.f6.dim.br2.br--right.pointer.b${signedinclasses}[type='submit'][value='${button_text}']`),
+                    m(`input.button-reset.fl.w-100.w-25-ns.bg-orange.white.bn.pv2.f6.dim.br0.br2-ns.br--right-ns.pointer.b${signedinclasses}[type='submit'][value='${button_text}']`),
                     m("div.fl.pa2", status)
                 ]),
-                m('div.pb2.pt2.mv3.bb.bw2.border--orange.flex.justify-around', [
+                m('div.pb2.pt2.mb2.mt1.bb.bw2.border--orange.flex.justify-around', [
                     radio("Bacon"),
                     radio("Cheese"),
                     radio("Peppers"),
