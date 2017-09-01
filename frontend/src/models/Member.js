@@ -5,6 +5,21 @@ import stream from 'mithril/stream'
 
 const Member = {
     list: new Map(),
+    search: '',
+    filtered_members: [],
+    setSearch(value) { 
+        Member.search = value
+        if (Member.search.trim().length == 0) {
+            Member.current.clear()
+        }
+        Member.filtered_members = Array.from(Member.list.values()).filter(member => member.name.toUpperCase().indexOf(Member.search.toUpperCase()) > -1)
+        if (Member.filtered_members.length == 1) {
+            console.log(Member.filtered_members[0].id)
+            Member.setCurrent(Member.filtered_members[0].id)
+        } else {
+            Member.current.clear()
+        }
+    },
     current: {
         id: stream(),
         name: stream(),
@@ -45,6 +60,7 @@ const Member = {
         }).then(() => {
             Member.signining_in = false
             Member.check_shown = true
+            Member.setSearch('')
             setTimeout(() => {
                 Member.check_shown = false
                 m.redraw()
@@ -52,9 +68,19 @@ const Member = {
         })
     },
     signout() {
+        Member.signining_in = true
         return r({
             url: `/members/${Member.current.id()}/signout`,
             method: 'GET'
+        }).then(() => {
+            Member.signining_in = false
+            Member.check_shown = true
+            Member.setSearch('')
+            setTimeout(() => {
+                Member.check_shown = false
+                m.redraw()
+            }, 1000)
+            Member.setSearch('')
         })
     },
     action() {

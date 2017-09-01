@@ -33,6 +33,7 @@ function signin(e) {
     if (Member.current.signedin()) {
         Member.signout().then(() => {
             Member.current.clear()
+            document.getElementById('search').focus()
             Member.all()
             Signin.all()
         })
@@ -45,17 +46,25 @@ function signin(e) {
     }
 }
 
+function search_created(vnode) {
+    vnode.dom.focus()
+}
+
 const Regular = {
     oninit() {
-        Member.all().then(m.redraw)
+        Member.all().then(() => {
+            Member.setSearch('')
+            m.redraw()
+        })
         Signin.all().then(m.redraw)
     },
     view() {
         let action = Member.current.signedin() ? "Signout" : "Signin"
-        console.log(Member.current.signin())
         let signedinclasses = ""
         let current_signin = Member.current.signin()
-        if (current_signin != undefined) {
+        console.log("current signin", current_signin)
+        console.log("signedin", Member.current.signedin())
+        if (current_signin != undefined && typeof current_signin !== "string") {
             if (current_signin.date_out !== null) {
                 signedinclasses = ".noclick.dimmed"
             }
@@ -66,20 +75,25 @@ const Regular = {
         } else if (Member.check_shown) {
             status = "✔"
         }
-        let button_text = action + " " + status
-        console.log(action, status)
+        let button_text = action
         return m('div.bg-orange.h-100.pa1.pb5', 
             m('h2.white.center.tc.br2', "ECG Robotics Signin"),
-            m('form.center.measure.pa4.bg-white', 
+            m("form.center.measure.pa4.bg-white.br1[autocomplete='off']", 
                 { onsubmit: signin },
-                Array.from(Member.list.values()).map(member => member_radio(member)),
-                m('div.pb2.pt2.mt3.bt.bw2.border--orange.flex.justify-around', [
+                m('div.cf', [
+                    m.fragment({ oncreate: search_created}, [
+                        m('input.fl.pa2.lh-solid.ba.w-60.input-reset#search', { oninput: m.withAttr('value', Member.setSearch), value: Member.search})
+                    ]),
+                    m(`input.fl.w-25.button-reset.bg-orange.white.bn.pv2.f6.dim.br2.br--right.pointer.b${signedinclasses}[type='submit'][value='${button_text}']`),
+                    m("div.fl.pa2", status)
+                ]),
+                m('div.pb2.pt2.mv3.bb.bw2.border--orange.flex.justify-around', [
                     radio("Bacon"),
                     radio("Cheese"),
                     radio("Peppers"),
                     radio("None")
                 ]),
-                m(`input.button-reset.bg-orange.white.bn.mt2.pv2.ph3.f6.dim.br2.pointer.b${signedinclasses}[type='submit'][value='${button_text}']`)
+                Member.filtered_members.map(member => member_radio(member))
             )
         )
     }

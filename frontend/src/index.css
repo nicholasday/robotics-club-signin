@@ -13,3 +13,15 @@ body { font-family: "Helvetica", "Arial", sans-serif; }
 
 .dimmed { opacity: .5; }
 .noclick { pointer-events: none; }
+
+html {
+  overflow-y: scroll; 
+}
+
+body {
+    height: 100vh;
+}
+
+body {
+    min-height: 100vh;
+}
