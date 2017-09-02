@@ -42,7 +42,7 @@ impl Signin {
         Ok(member)
     }
 
-    pub fn get_date(date: Date<Tz>, conn: &Conn) -> QueryResult<Vec<Signin>> {
+    pub fn get_date(date: DateTime<Tz>, conn: &Conn) -> QueryResult<Vec<Signin>> {
         let mut statement = conn.prepare("SELECT * FROM signins where date(date_in) = ?1")?;
         let rows = statement.query_map(&[&date.format("%Y-%m-%d").to_string()], |row| Signin::from(&row))?;
 
@@ -55,14 +55,14 @@ impl Signin {
 
     pub fn today_exists(id: &i64, conn: &Conn) -> QueryResult<bool> {
         let mut statement = conn.prepare("SELECT * FROM signins WHERE date(date_in) = ?1 AND member_id = ?2")?;
-        let now = Utc::today();
+        let now = Utc::now();
         let now_local = now.with_timezone(&New_York);
         let result = statement.exists(&[&now_local.format("%Y-%m-%d").to_string(), id])?;
         Ok(result)
     }
 
     pub fn get_today(conn: &Conn) -> QueryResult<Vec<Signin>> {
-        let now = Utc::today();
+        let now = Utc::now();
         let now_local = now.with_timezone(&New_York);
         Ok(Signin::get_date(now_local, &conn)?)
     }

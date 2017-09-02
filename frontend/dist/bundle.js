@@ -1398,23 +1398,41 @@ module.exports = g;
 
 "use strict";
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__utils_request__ = __webpack_require__(4);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__Signin__ = __webpack_require__(1);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_mithril_stream__ = __webpack_require__(5);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_mithril_stream___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_2_mithril_stream__);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_mithril__ = __webpack_require__(0);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_mithril___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_1_mithril__);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__Signin__ = __webpack_require__(1);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3_mithril_stream__ = __webpack_require__(5);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3_mithril_stream___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_3_mithril_stream__);
+
 
 
 
 
 const Member = {
     list: new Map(),
+    search: '',
+    filtered_members: [],
+    setSearch(value) { 
+        Member.search = value
+        if (Member.search.trim().length == 0) {
+            Member.current.clear()
+        }
+        Member.filtered_members = Array.from(Member.list.values()).filter(member => member.name.toUpperCase().indexOf(Member.search.toUpperCase()) > -1)
+        if (Member.filtered_members.length == 1) {
+            console.log(Member.filtered_members[0].id)
+            Member.setCurrent(Member.filtered_members[0].id)
+        } else {
+            Member.current.clear()
+        }
+    },
     current: {
-        id: __WEBPACK_IMPORTED_MODULE_2_mithril_stream___default()(),
-        name: __WEBPACK_IMPORTED_MODULE_2_mithril_stream___default()(),
-        team: __WEBPACK_IMPORTED_MODULE_2_mithril_stream___default()(),
-        last_pizza: __WEBPACK_IMPORTED_MODULE_2_mithril_stream___default()(),
-        signin: __WEBPACK_IMPORTED_MODULE_2_mithril_stream___default()(),
-        pizza: __WEBPACK_IMPORTED_MODULE_2_mithril_stream___default()(),
-        signedin: __WEBPACK_IMPORTED_MODULE_2_mithril_stream___default()(),
+        id: __WEBPACK_IMPORTED_MODULE_3_mithril_stream___default()(),
+        name: __WEBPACK_IMPORTED_MODULE_3_mithril_stream___default()(),
+        team: __WEBPACK_IMPORTED_MODULE_3_mithril_stream___default()(),
+        last_pizza: __WEBPACK_IMPORTED_MODULE_3_mithril_stream___default()(),
+        signin: __WEBPACK_IMPORTED_MODULE_3_mithril_stream___default()(),
+        pizza: __WEBPACK_IMPORTED_MODULE_3_mithril_stream___default()(),
+        signedin: __WEBPACK_IMPORTED_MODULE_3_mithril_stream___default()(),
         clear() {
             Member.current.id("")
             Member.current.name("")
@@ -1432,21 +1450,42 @@ const Member = {
         Member.current.team(i.team)
         Member.current.pizza(i.last_pizza)
         Member.current.last_pizza(i.last_pizza)
-        let signin = __WEBPACK_IMPORTED_MODULE_1__Signin__["a" /* default */].signin(i.id)
+        let signin = __WEBPACK_IMPORTED_MODULE_2__Signin__["a" /* default */].signin(i.id)
         Member.current.signin(signin)
         Member.current.signedin(signin !== undefined)
     },
+    signining_in: false,
+    check_shown: false,
     signin() {
+        Member.signining_in = true
         return Object(__WEBPACK_IMPORTED_MODULE_0__utils_request__["a" /* default */])({
             url: `/members/${Member.current.id()}/signin`,
             method: 'POST',
             data: { pizza: Member.current.pizza() }
+        }).then(() => {
+            Member.signining_in = false
+            Member.check_shown = true
+            Member.setSearch('')
+            setTimeout(() => {
+                Member.check_shown = false
+                __WEBPACK_IMPORTED_MODULE_1_mithril___default.a.redraw()
+            }, 1000)
         })
     },
     signout() {
+        Member.signining_in = true
         return Object(__WEBPACK_IMPORTED_MODULE_0__utils_request__["a" /* default */])({
             url: `/members/${Member.current.id()}/signout`,
             method: 'GET'
+        }).then(() => {
+            Member.signining_in = false
+            Member.check_shown = true
+            Member.setSearch('')
+            setTimeout(() => {
+                Member.check_shown = false
+                __WEBPACK_IMPORTED_MODULE_1_mithril___default.a.redraw()
+            }, 1000)
+            Member.setSearch('')
         })
     },
     action() {
@@ -1494,25 +1533,13 @@ const Member = {
 if (true) {
     var url = "http://signin-api.nickendo.com"
 } else {
-    var url = "http://localhost:8001"
-}
-
-function deserialize(data) {
-    try {return data !== "" ? JSON.parse(data) : null}
-    catch (e) {throw new Error(data)}
+    var url = "http://localhost:8000"
 }
 
 function request(options) {
     options.url = url + options.url
 
-    options.extract = xhr => ({
-            status: xhr.status,
-            body: deserialize(xhr.responseText)
-    })
-
     return __WEBPACK_IMPORTED_MODULE_0_mithril___default.a.request(options)
-        .catch(catcherPromise)
-        .then(regularize)
 }
 
 function catcherPromise(e) {
@@ -1526,10 +1553,6 @@ function catcherPromise(e) {
         }
         reject(e)
     })
-}
-
-function regularize(result) {
-    return result.body
 }
 
 /* harmony default export */ __webpack_exports__["a"] = (request);
@@ -2813,6 +2836,7 @@ function signin(e) {
     if (__WEBPACK_IMPORTED_MODULE_1__models_Member__["a" /* default */].current.signedin()) {
         __WEBPACK_IMPORTED_MODULE_1__models_Member__["a" /* default */].signout().then(() => {
             __WEBPACK_IMPORTED_MODULE_1__models_Member__["a" /* default */].current.clear()
+            document.getElementById('search').focus()
             __WEBPACK_IMPORTED_MODULE_1__models_Member__["a" /* default */].all()
             __WEBPACK_IMPORTED_MODULE_2__models_Signin__["a" /* default */].all()
         })
@@ -2825,26 +2849,54 @@ function signin(e) {
     }
 }
 
+function search_created(vnode) {
+    vnode.dom.focus()
+}
+
 const Regular = {
     oninit() {
-        __WEBPACK_IMPORTED_MODULE_1__models_Member__["a" /* default */].all().then(__WEBPACK_IMPORTED_MODULE_0_mithril___default.a.redraw)
+        __WEBPACK_IMPORTED_MODULE_1__models_Member__["a" /* default */].all().then(() => {
+            __WEBPACK_IMPORTED_MODULE_1__models_Member__["a" /* default */].setSearch('')
+            __WEBPACK_IMPORTED_MODULE_0_mithril___default.a.redraw()
+        })
         __WEBPACK_IMPORTED_MODULE_2__models_Signin__["a" /* default */].all().then(__WEBPACK_IMPORTED_MODULE_0_mithril___default.a.redraw)
     },
     view() {
-        return __WEBPACK_IMPORTED_MODULE_0_mithril___default()('div.bg-orange.h-100.pa1.pb5', 
-            __WEBPACK_IMPORTED_MODULE_0_mithril___default()('h2.white.center.tc', "ECG Robotics Signin"),
-            __WEBPACK_IMPORTED_MODULE_0_mithril___default()('form.center.measure.pa4.bg-white', 
+        let action = __WEBPACK_IMPORTED_MODULE_1__models_Member__["a" /* default */].current.signedin() ? "Signout" : "Signin"
+        let signedinclasses = ""
+        let current_signin = __WEBPACK_IMPORTED_MODULE_1__models_Member__["a" /* default */].current.signin()
+        console.log("current signin", current_signin)
+        console.log("signedin", __WEBPACK_IMPORTED_MODULE_1__models_Member__["a" /* default */].current.signedin())
+        if (current_signin != undefined && typeof current_signin !== "string") {
+            if (current_signin.date_out !== null) {
+                signedinclasses = ".noclick.dimmed"
+            }
+        }
+        let status = ""
+        if (__WEBPACK_IMPORTED_MODULE_1__models_Member__["a" /* default */].signining_in) {
+            status = "✈"
+        } else if (__WEBPACK_IMPORTED_MODULE_1__models_Member__["a" /* default */].check_shown) {
+            status = "✔"
+        }
+        let button_text = action
+        return __WEBPACK_IMPORTED_MODULE_0_mithril___default()('div.bg-orange.h-100.pv1.ph1-ns.pb5', 
+            __WEBPACK_IMPORTED_MODULE_0_mithril___default()('h2.white.center.tc.br2', "ECG Robotics Signin"),
+            __WEBPACK_IMPORTED_MODULE_0_mithril___default()("form.center.w-100.measure-ns.pa3.pa4-ns.bg-white.br1-ns[autocomplete='off']", 
                 { onsubmit: signin },
-                Array.from(__WEBPACK_IMPORTED_MODULE_1__models_Member__["a" /* default */].list.values()).map(member => member_radio(member)),
-                __WEBPACK_IMPORTED_MODULE_0_mithril___default()('div.pb2.pt2.mt3.bt.bw2.border--orange.flex.justify-around', [
+                __WEBPACK_IMPORTED_MODULE_0_mithril___default()('div.cf.ma0.pa0.w-100', [
+                    __WEBPACK_IMPORTED_MODULE_0_mithril___default.a.fragment({ oncreate: search_created}, [
+                        __WEBPACK_IMPORTED_MODULE_0_mithril___default()('input.input-reset.fl.lh-solid.ba.br0.pa2.w-100.w-60-ns#search', { oninput: __WEBPACK_IMPORTED_MODULE_0_mithril___default.a.withAttr('value', __WEBPACK_IMPORTED_MODULE_1__models_Member__["a" /* default */].setSearch), value: __WEBPACK_IMPORTED_MODULE_1__models_Member__["a" /* default */].search})
+                    ]),
+                    __WEBPACK_IMPORTED_MODULE_0_mithril___default()(`input.button-reset.fl.w-100.w-25-ns.bg-orange.white.bn.pv2.f6.dim.br0.br2-ns.br--right-ns.pointer.b${signedinclasses}[type='submit'][value='${button_text}']`),
+                    __WEBPACK_IMPORTED_MODULE_0_mithril___default()("div.fl.pa2", status)
+                ]),
+                __WEBPACK_IMPORTED_MODULE_0_mithril___default()('div.pb2.pt2.mb2.mt1.bb.bw2.border--orange.flex.justify-around', [
                     radio("Bacon"),
                     radio("Cheese"),
                     radio("Peppers"),
                     radio("None")
                 ]),
-                __WEBPACK_IMPORTED_MODULE_1__models_Member__["a" /* default */].current.signedin()
-                    ? __WEBPACK_IMPORTED_MODULE_0_mithril___default()("input.input-reset.bg-orange.white.bn.mt2.pv2.ph3.f6.pointer.b[type='submit'][value='Signout']")
-                    : __WEBPACK_IMPORTED_MODULE_0_mithril___default()("input.input-reset.bg-orange.white.bn.mt2.pv2.ph3.f6.pointer.b[type='submit'][value='Signin']")
+                __WEBPACK_IMPORTED_MODULE_1__models_Member__["a" /* default */].filtered_members.map(member => member_radio(member))
             )
         )
     }
@@ -3032,7 +3084,7 @@ exports = module.exports = __webpack_require__(6)(undefined);
 
 
 // module
-exports.push([module.i, ".orange { color: #FF851B }\n.bg-orange { background-color: #FF851B }\n.border--orange { border-color: #FF851B }\n.hover-b-orange:hover { border-color: #FF851B }\n\n.navy { color: #001f3f }\n.bg-navy { background-color: #001f3f }\n.border--navy { border-color: #001f3f }\n\n.hover-bg-blue:hover { background-color: #0074D9 }\n\nbody { font-family: \"Helvetica\", \"Arial\", sans-serif; }", ""]);
+exports.push([module.i, ".orange { color: #FF851B }\n.bg-orange { background-color: #FF851B }\n.border--orange { border-color: #FF851B }\n.hover-b-orange:hover { border-color: #FF851B }\n\n.navy { color: #001f3f }\n.bg-navy { background-color: #001f3f }\n.border--navy { border-color: #001f3f }\n\n.hover-bg-blue:hover { background-color: #0074D9 }\n\nbody { font-family: \"Helvetica\", \"Arial\", sans-serif; }\n\n.dimmed { opacity: .5; }\n.noclick { pointer-events: none; }\n\nhtml {\n  overflow-y: scroll; \n}\n\nbody {\n    height: 100vh;\n}\n\nbody {\n    min-height: 100vh;\n}\n\ninput{box-sizing:border-box} ", ""]);
 
 // exports
 

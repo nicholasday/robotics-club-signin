@@ -40,6 +40,7 @@ function signin(e) {
     } else {
         Member.signin().then(() => {
             Member.current.clear()
+            document.getElementById('search').focus()
             Member.all()
             Signin.all()
         })
@@ -56,7 +57,10 @@ const Regular = {
             Member.setSearch('')
             m.redraw()
         })
-        Signin.all().then(m.redraw)
+        Signin.all().then(() => {
+            Member.setSearch('')
+            m.redraw()
+        })
     },
     view() {
         let action = Member.current.signedin() ? "Signout" : "Signin"

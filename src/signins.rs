@@ -28,7 +28,7 @@ fn get_signins(conn: Conn) -> JsonResult {
 fn get_signins_date(year: i32, month: u32, day: u32, conn: Conn) -> JsonResult {
     let mut context = Context::new();
 
-    match Signin::get_date(New_York.ymd(year, month, day), &conn) {
+    match Signin::get_date(New_York.ymd(year, month, day).and_hms(1, 1, 1), &conn) {
         Ok(dates) => {
             context.add("dates", &dates);
             Ok(Json(context))
