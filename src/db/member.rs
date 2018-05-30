@@ -1,5 +1,5 @@
-use db::QueryResult;
 use db::Conn;
+use db::QueryResult;
 
 use rusqlite::Row;
 
@@ -8,14 +8,14 @@ pub struct Member {
     id: i64,
     name: String,
     team: i64,
-    last_pizza: String
+    last_pizza: String,
 }
 
 #[derive(Debug, Serialize, Deserialize)]
 pub struct PostMember {
     name: String,
     team: i64,
-    last_pizza: String
+    last_pizza: String,
 }
 
 impl<'a> From<&'a &'a Row<'a, 'a>> for Member {
@@ -49,15 +49,26 @@ impl Member {
         Ok(member)
     }
 
+    pub fn delete(id: &i64, conn: &Conn) -> QueryResult<Member> {
+        let member = Member::get(id, &conn)?;
+        conn.execute("DELETE FROM members WHERE id=?1", &[id])?;
+
+        Ok(member)
+    }
+
     pub fn signin(id: &i64, pizza: &str, conn: &Conn) -> QueryResult<Member> {
-        conn.execute("UPDATE members SET last_pizza = ?1 WHERE id = ?2", &[&pizza, id])?;
+        conn.execute(
+            "UPDATE members SET last_pizza = ?1 WHERE id = ?2",
+            &[&pizza, id],
+        )?;
         let member = Member::get(id, &conn)?;
 
         Ok(member)
     }
 
     pub fn insert(member: &PostMember, conn: &Conn) -> QueryResult<Member> {
-        let mut statement = conn.prepare("INSERT into members (name, team, last_pizza) VALUES (?1, ?2, ?3)")?;
+        let mut statement =
+            conn.prepare("INSERT into members (name, team, last_pizza) VALUES (?1, ?2, ?3)")?;
         let id = statement.insert(&[&member.name, &member.team, &member.last_pizza])?;
         let member = Member::get(&id, &conn)?;
 

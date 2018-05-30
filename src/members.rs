@@ -1,11 +1,11 @@
-use types::JsonResult;
-use tera::Context;
-use db::Conn;
-use rocket_contrib::Json;
 use db::member::{Member, PostMember};
-use db::signin::{Signin, PostPizza};
-use rocket::response::status::Custom;
+use db::signin::{PostPizza, Signin};
+use db::Conn;
 use rocket::http::Status;
+use rocket::response::status::Custom;
+use rocket_contrib::Json;
+use tera::Context;
+use types::JsonResult;
 
 #[get("/members", format = "application/json")]
 fn get_members(conn: Conn) -> JsonResult {
@@ -15,7 +15,7 @@ fn get_members(conn: Conn) -> JsonResult {
         Ok(members) => {
             context.add("members", &members);
             Ok(Json(context))
-        },
+        }
         Err(_) => {
             context.add("error", &"Something went wrong.");
             Err(Custom(Status::BadRequest, Json(context)))
@@ -31,7 +31,7 @@ fn signout_member(id: i64, conn: Conn) -> JsonResult {
         Ok(signin) => {
             context.add("signin", &signin);
             Ok(Json(context))
-        },
+        }
         Err(_) => {
             context.add("error", &"Something went wrong.");
             Err(Custom(Status::BadRequest, Json(context)))
@@ -47,14 +47,30 @@ fn signin_member(id: i64, pizza: Json<PostPizza>, conn: Conn) -> JsonResult {
         Ok(signin) => {
             context.add("signin", &signin);
             match Member::signin(&id, &(pizza.0).pizza, &conn) {
-                Ok(_) => {},
+                Ok(_) => {}
                 Err(_) => {
                     context.add("error", &"Something went wrong.");
                     return Err(Custom(Status::BadRequest, Json(context)));
                 }
             }
             Ok(Json(context))
-        },
+        }
+        Err(_) => {
+            context.add("error", &"Something went wrong.");
+            Err(Custom(Status::BadRequest, Json(context)))
+        }
+    }
+}
+
+#[delete("/member/<id>", format = "application/json")]
+fn delete_member(id: i64, conn: Conn) -> JsonResult {
+    let mut context = Context::new();
+
+    match Member::delete(&id, &conn) {
+        Ok(member) => {
+            context.add("member", &member);
+            Ok(Json(context))
+        }
         Err(_) => {
             context.add("error", &"Something went wrong.");
             Err(Custom(Status::BadRequest, Json(context)))
@@ -70,7 +86,7 @@ fn post_members(member: Json<PostMember>, conn: Conn) -> JsonResult {
         Ok(member) => {
             context.add("member", &member);
             Ok(Json(context))
-        },
+        }
         Err(_) => {
             context.add("error", &"Something went wrong.");
             Err(Custom(Status::BadRequest, Json(context)))
