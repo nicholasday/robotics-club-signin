@@ -260,6 +260,7 @@ name = "libsqlite3-sys"
 version = "0.8.1"
 source = "git+https://github.com/1300webpro/rusqlite#b44e22cc76ef4934100d462d34dcb992f5904b08"
 dependencies = [
+ "gcc 0.3.54 (registry+https://github.com/rust-lang/crates.io-index)",
  "pkg-config 0.3.11 (registry+https://github.com/rust-lang/crates.io-index)",
  "vcpkg 0.2.3 (registry+https://github.com/rust-lang/crates.io-index)",
 ]

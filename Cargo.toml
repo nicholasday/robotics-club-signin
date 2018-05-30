@@ -27,7 +27,7 @@ features = ["json"]
 [dependencies.rusqlite]
 git = "https://github.com/1300webpro/rusqlite"
 version = "0.12.0"
-features = ["chrono"]
+features = ["chrono", "bundled"]
 
 [replace]
 "rusqlite:0.12.0" = { git = "https://github.com/1300webpro/rusqlite", features = ["chrono"] }
