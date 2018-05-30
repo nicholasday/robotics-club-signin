@@ -104,14 +104,18 @@ const Admin = {
           "tbody",
           Object.values(Signin.list).map(signin => {
             let member = Member.list.get(signin.member_id);
-            return m("tr.stripe-dark", [
-              m("td.pa2", signin.id),
-              m("td.pa2", member.name),
-              m("td.pa2", member.team),
-              m("td.pa2", signin.pizza),
-              m("td.pa2", signin.date_in),
-              m("td.pa2", signin.date_out)
-            ]);
+            if (member !== undefined) {
+              return m("tr.stripe-dark", [
+                m("td.pa2", signin.id),
+                m("td.pa2", member.name),
+                m("td.pa2", member.team),
+                m("td.pa2", signin.pizza),
+                m("td.pa2", signin.date_in),
+                m("td.pa2", signin.date_out)
+              ]);
+            } else {
+              return null;
+            }
           })
         )
       ])
