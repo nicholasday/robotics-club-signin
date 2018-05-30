@@ -31,6 +31,7 @@ impl<'a> From<&'a &'a Row<'a, 'a>> for Member {
 
 impl Member {
     pub fn all(conn: &Conn) -> QueryResult<Vec<Member>> {
+        conn.execute("PRAGMA foreign_keys = ON;", &[])?;
         let mut statement = conn.prepare("SELECT * FROM members ORDER BY UPPER(name)")?;
         let rows = statement.query_map(&[], |row| Member::from(&row))?;
 
@@ -43,6 +44,7 @@ impl Member {
     }
 
     pub fn get(id: &i64, conn: &Conn) -> QueryResult<Member> {
+        conn.execute("PRAGMA foreign_keys = ON;", &[])?;
         let mut statement = conn.prepare("SELECT * FROM members WHERE id=?1")?;
         let member = statement.query_row(&[id], |row| Member::from(&row))?;
 
@@ -50,6 +52,7 @@ impl Member {
     }
 
     pub fn delete(id: &i64, conn: &Conn) -> QueryResult<Member> {
+        conn.execute("PRAGMA foreign_keys = ON;", &[])?;
         let member = Member::get(id, &conn)?;
         conn.execute("DELETE FROM members WHERE id=?1", &[id])?;
 
@@ -57,6 +60,7 @@ impl Member {
     }
 
     pub fn signin(id: &i64, pizza: &str, conn: &Conn) -> QueryResult<Member> {
+        conn.execute("PRAGMA foreign_keys = ON;", &[])?;
         conn.execute(
             "UPDATE members SET last_pizza = ?1 WHERE id = ?2",
             &[&pizza, id],
@@ -67,6 +71,7 @@ impl Member {
     }
 
     pub fn insert(member: &PostMember, conn: &Conn) -> QueryResult<Member> {
+        conn.execute("PRAGMA foreign_keys = ON;", &[])?;
         let mut statement =
             conn.prepare("INSERT into members (name, team, last_pizza) VALUES (?1, ?2, ?3)")?;
         let id = statement.insert(&[&member.name, &member.team, &member.last_pizza])?;

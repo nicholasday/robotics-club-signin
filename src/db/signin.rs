@@ -36,6 +36,7 @@ impl<'a> From<&'a &'a Row<'a, 'a>> for Signin {
 
 impl Signin {
     pub fn get(id: &i64, conn: &Conn) -> QueryResult<Signin> {
+        conn.execute("PRAGMA foreign_keys = ON;", &[])?;
         let mut statement = conn.prepare("SELECT * FROM signins WHERE id=?1")?;
         let member = statement.query_row(&[id], |row| Signin::from(&row))?;
 
@@ -43,6 +44,7 @@ impl Signin {
     }
 
     pub fn get_date(date: DateTime<Tz>, conn: &Conn) -> QueryResult<Vec<Signin>> {
+        conn.execute("PRAGMA foreign_keys = ON;", &[])?;
         let mut statement = conn.prepare("SELECT * FROM signins where date(date_in) = ?1")?;
         let rows = statement.query_map(&[&date.format("%Y-%m-%d").to_string()], |row| {
             Signin::from(&row)
@@ -56,6 +58,7 @@ impl Signin {
     }
 
     pub fn today_exists(id: &i64, conn: &Conn) -> QueryResult<bool> {
+        conn.execute("PRAGMA foreign_keys = ON;", &[])?;
         let mut statement =
             conn.prepare("SELECT * FROM signins WHERE date(date_in) = ?1 AND member_id = ?2")?;
         let now = Utc::now();
