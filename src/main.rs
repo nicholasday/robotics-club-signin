@@ -34,6 +34,8 @@ fn main() {
         .mount(
             "/",
             routes![
+                get_pizza_list,
+                post_pizza_list,
                 delete_member,
                 signout_member,
                 get_signins_date,

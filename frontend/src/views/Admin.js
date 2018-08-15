@@ -9,6 +9,35 @@ function addMember(e) {
     .then(Member.all);
 }
 
+var date = "";
+
+function setDate(d) {
+  date = d;
+}
+
+function goToDate(e) {
+  e.preventDefault();
+  Signin.getDate(date).then(m.redraw);
+}
+
+var pizza = "";
+
+function setPizza(p) {
+  pizza = p;
+}
+
+function addPizza(e) {
+  e.preventDefault();
+  Signin.addPizza(pizza);
+}
+
+function deletePizza(name) {
+  return function(e) {
+    e.preventDefault();
+    Signin.removePizza(name);
+  };
+}
+
 function deleteMember(id) {
   return function(event) {
     event.preventDefault();
@@ -32,15 +61,60 @@ const Admin = {
   oninit() {
     Member.all().then(m.redraw);
     Signin.all().then(m.redraw);
+    Signin.getPizzaList();
   },
   view() {
     return m("div.pa4", [
-      m("div", [
-        m("p", "Cheese: " + Signin.current.cheese),
-        m("p", "Peppers: " + Signin.current.peppers),
-        m("p", "Bacon: " + Signin.current.bacon),
-        m("p", "None: " + Signin.current.none)
-      ]),
+      m(
+        "div",
+        m("h2", "Pizza Signups"),
+        Object.entries(Signin.pizzas).map(function(entry) {
+          return m("p", entry[0] + ": " + entry[1]);
+        })
+      ),
+      m(
+        "div",
+        m("h2", "Pizza Types List:"),
+        Signin.pizzaList.map(function(pizza) {
+          return m(
+            "p",
+            pizza + " ",
+            m("a.underline", { onclick: deletePizza(pizza) }, "x")
+          );
+        })
+      ),
+      m(
+        "div",
+        { onsubmit: goToDate },
+        m("form.center.measure.measure-narrow-ns.pa2", [
+          m(
+            "input.input-reset.w-100.pa2.ba.b--black-20[name='name'][placeholder='08-15-2018']",
+            {
+              oninput: m.withAttr("value", setDate),
+              value: date
+            }
+          ),
+          m(
+            "input.input-reset.lh-copy.white.b.ba.br3.bw0.bg-orange.ph3.pv2.f6.pointer[type='submit'][value='Go to date']"
+          )
+        ])
+      ),
+      m(
+        "div",
+        { onsubmit: addPizza },
+        m("form.center.measure.measure-narrow-ns.pa2", [
+          m(
+            "input.input-reset.w-100.pa2.ba.b--black-20[name='name'][placeholder='Pizza']",
+            {
+              oninput: m.withAttr("value", setPizza),
+              value: pizza
+            }
+          ),
+          m(
+            "input.input-reset.lh-copy.white.b.ba.br3.bw0.bg-orange.ph3.pv2.f6.pointer[type='submit'][value='Add Pizza']"
+          )
+        ])
+      ),
       m(
         "div",
         { onsubmit: addMember },
@@ -60,7 +134,7 @@ const Admin = {
             radio("1533")
           ]),
           m(
-            "input.input-reset.lh-copy.white.b.ba.br3.bw0.bg-orange.ph3.pv2.f6.pointer[type='submit'][value='Add']"
+            "input.input-reset.lh-copy.white.b.ba.br3.bw0.bg-orange.ph3.pv2.f6.pointer[type='submit'][value='Add Member']"
           )
         ])
       ),
@@ -88,6 +162,7 @@ const Admin = {
           })
         )
       ]),
+      m("h2", "Total Signins this Date: " + Signin.list.total),
       m("table.w-100.center", [
         m(
           "thead",
