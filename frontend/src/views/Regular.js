@@ -34,12 +34,19 @@ function signin(e) {
       Signin.all();
     });
   } else {
-    Member.signin().then(() => {
-      Member.current.clear();
-      document.getElementById("search").focus();
-      Member.all();
-      Signin.all();
-    });
+    if (
+      Signin.pizzaList.indexOf(Member.current.pizza()) < 0 ||
+      Member.current.pizza().trim() === ""
+    ) {
+      alert("You didn't select a pizza!");
+    } else {
+      Member.signin().then(() => {
+        Member.current.clear();
+        document.getElementById("search").focus();
+        Member.all();
+        Signin.all();
+      });
+    }
   }
 }
 
