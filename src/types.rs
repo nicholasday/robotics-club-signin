@@ -1,12 +1,11 @@
-use rusqlite;
 use rocket::response::status::Custom;
-use rocket_contrib::Json;
-use tera::Context;
+use rocket::serde::json::Value;
+use rocket_sync_db_pools::rusqlite;
 
 pub enum Error {
     SqliteError,
     AlreadySignedin,
-    HaventSignedin
+    HaventSignedin,
 }
 
 impl From<rusqlite::Error> for Error {
@@ -16,4 +15,4 @@ impl From<rusqlite::Error> for Error {
     }
 }
 
-pub type JsonResult = Result<Json<Context>, Custom<Json<Context>>>;
+pub type JsonResult = Result<Value, Custom<Value>>;

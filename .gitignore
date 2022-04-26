@@ -65,3 +65,5 @@ typings/
 
 data.db
 pizzalist.txt
+
+*.db
