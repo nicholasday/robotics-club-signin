@@ -10,6 +10,9 @@ extern crate chrono_tz;
 extern crate rocket_cors;
 extern crate tera;
 
+extern crate dotenvy;
+use dotenvy::dotenv;
+
 mod db;
 mod members;
 mod signins;
@@ -20,6 +23,8 @@ use crate::signins::*;
 
 #[launch]
 fn rocket() -> _ {
+    dotenv().ok();
+
     let default = rocket_cors::CorsOptions {
         max_age: Some(3600),
         ..Default::default()

@@ -67,3 +67,4 @@ data.db
 pizzalist.txt
 
 *.db
+.env*

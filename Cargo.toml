@@ -16,10 +16,12 @@ serde_derive = "1.0"
 serde_json = "1.0"
 
 tera = "1"
+dotenvy = "0.15.1"
 
-rusqlite = { version = "0.25", features = ["chrono"] }
+rusqlite = { version = "0.25", features = ["chrono", "bundled"] }
 rocket_cors = "0.6.0-alpha1"
 
 [dependencies.rocket_sync_db_pools]
 version = "0.1.0-rc.1"
+default-features = false
 features = ["sqlite_pool"]

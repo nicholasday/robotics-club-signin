@@ -1,0 +1,12 @@
+[Unit]
+Description=robotics-club-signin
+After=network.target
+
+[Service]
+WorkingDirectory=/var/www/robotics-club-signin/
+ExecStart=/var/www/robotics-club-signin/robotics-club-signin
+User=www-data
+Group=www-data
+
+[Install]
+WantedBy=multi-user.target
